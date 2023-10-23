@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Employee {
+  id        String   @id @default(uuid())
+  alias     String
+  email     String   @unique
+  password  String
+  siteId    String
+  site      Site     @relation(fields: [siteId], references: [id])
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([siteId])
+}
+
+model Product {
+  id           String      @id @default(uuid())
+  name         String
+  description  String
+  categoryName Categories
+  category     Category    @relation(fields: [categoryName], references: [name])
+  quantity     Int
+  unitCost     Float
+  size         String
+  siteName     Sites
+  site         Site        @relation(fields: [siteName], references: [name])
+  orderItems   OrderItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([categoryName])
+  @@index([name])
+  @@index([siteName])
+}
+
+enum Categories {
+  SAFETY_VEST
+  EYE_PROTECTION
+  HEAD_PROTECTION
+  TOE_PROTECTION
+  HAND_PROTECTION
+  FACE_PROTECTION
+  FALL_PROTECTION
+  KNEE_PROTECTION
+  SAFETY_ARC_SUIT
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      Categories @unique
+  products  Product[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  siteId     String
+  site       Site        @relation(fields: [siteId], references: [id])
+  userId     String
+  user       Employee    @relation(fields: [userId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  orderItems OrderItem[]
+
+  @@index([siteId])
+  @@index([userId])
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  size      String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+enum Sites {
+  BAH52
+  BAH53
+  BAH54
+}
+
+model Site {
+  id        String     @id @default(uuid())
+  name      Sites      @unique
+  products  Product[]
+  employees Employee[]
+  orders    Order[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
