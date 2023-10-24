@@ -21,6 +21,7 @@ export const createItemSchema = z.object({
   quantity: z.number(),
   unitCost: z.number(),
   size: z.string().min(1).max(1),
+  imageUrl: z.string(),
 });
 
 export async function POST(request: NextRequest) {

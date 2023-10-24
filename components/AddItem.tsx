@@ -24,6 +24,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import ImageUplaod from "./image-upload";
+import { useState } from "react";
 
 const categories = [
   "SAFETY_VEST",
@@ -47,9 +49,11 @@ const formSchema = z.object({
   quantity: z.number(),
   unitCost: z.number(),
   size: z.string().min(1).max(1),
+  imageUrl: z.string(),
 });
 
 const AddItem = () => {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,16 +62,19 @@ const AddItem = () => {
       category: "SAFETY_VEST",
       name: "",
       description: "",
-      quantity: 1,
-      unitCost: 10,
-      size: "M",
+      quantity: 0,
+      unitCost: 0,
+      size: "",
+      imageUrl: "",
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     await axios.post("/api/items", values);
     router.push("/order");
+    setLoading(false);
   }
 
   return (
@@ -75,11 +82,33 @@ const AddItem = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
+          name="imageUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Item image</FormLabel>
+              <FormControl>
+                <ImageUplaod
+                  value={field.value ? [field.value] : []}
+                  disabled={loading}
+                  onChange={(url) => field.onChange(url)}
+                  onRemove={() => field.onChange("")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="site"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Site</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={loading}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select site" />
@@ -103,7 +132,11 @@ const AddItem = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                disabled={loading}
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
@@ -128,7 +161,7 @@ const AddItem = () => {
             <FormItem>
               <FormLabel>Enter Item Name</FormLabel>
               <FormControl>
-                <Input placeholder="Item name" {...field} />
+                <Input disabled={loading} placeholder="Item name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -141,7 +174,11 @@ const AddItem = () => {
             <FormItem>
               <FormLabel>Enter Item Description</FormLabel>
               <FormControl>
-                <Input placeholder="Item description" {...field} />
+                <Input
+                  disabled={loading}
+                  placeholder="Item description"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -154,7 +191,11 @@ const AddItem = () => {
             <FormItem>
               <FormLabel>Size</FormLabel>
               <FormControl>
-                <Input placeholder="Enter Item Size" {...field} />
+                <Input
+                  disabled={loading}
+                  placeholder="Enter Item Size"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -180,7 +221,12 @@ const AddItem = () => {
             <FormItem>
               <FormLabel>Unit Cost</FormLabel>
               <FormControl>
-                <Input placeholder="enter unit cost" {...field} type="number" />
+                <Input
+                  disabled={loading}
+                  placeholder="enter unit cost"
+                  {...field}
+                  type="number"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
