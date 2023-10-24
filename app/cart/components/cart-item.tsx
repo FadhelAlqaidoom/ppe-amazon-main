@@ -22,7 +22,7 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
       <div className="relative h-24 w-24 overflow-hidden rounded-md sm:h-48 sm:w-48">
         <Image
           fill
-          src="/glovesimg.jpeg"
+          src={data.imageUrl}
           alt=""
           className="object-cover object-center"
         />

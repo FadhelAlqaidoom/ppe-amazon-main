@@ -82,6 +82,7 @@ const Order = async () => {
     sizeOptions: [item.size],
     quantityAvailable: item.quantity,
     category: item.categoryName,
+    imageUrl: item.imageUrl,
   }));
 
   return (

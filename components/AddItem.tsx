@@ -208,7 +208,13 @@ const AddItem = () => {
             <FormItem>
               <FormLabel>Quantity</FormLabel>
               <FormControl>
-                <Input placeholder="enter quantity" {...field} type="number" />
+                <Input
+                  disabled={loading}
+                  placeholder="enter quantity"
+                  {...field}
+                  type="number"
+                  onChange={(e) => field.onChange(parseInt(e.target.value))}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -226,6 +232,7 @@ const AddItem = () => {
                   placeholder="enter unit cost"
                   {...field}
                   type="number"
+                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
                 />
               </FormControl>
               <FormMessage />

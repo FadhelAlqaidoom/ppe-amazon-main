@@ -4,6 +4,7 @@ export interface item {
   sizeOptions: string[];
   quantityAvailable: number;
   category: string;
+  imageUrl: string;
 }
 
 export interface Image {

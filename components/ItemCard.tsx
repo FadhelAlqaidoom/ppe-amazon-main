@@ -42,7 +42,7 @@ export const ItemCard: React.FC<CardProps> = ({ data }) => {
         <div className="relative h-48 w-full">
           <Image
             // src={item.photoUrl}
-            src="/glovesimg.jpeg"
+            src={data.imageUrl}
             alt={data.category}
             layout="fill"
             objectFit="cover"
