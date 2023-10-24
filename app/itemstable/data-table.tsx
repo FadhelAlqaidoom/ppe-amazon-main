@@ -23,6 +23,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -53,7 +55,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex justify-between py-4">
         <Input
           placeholder="Filter names..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -62,6 +64,14 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <Button>
+          <Link href="/items">
+            <span className="flex items-center justify-center">
+              <Plus className="mx-1 h-4 w-4" />
+              Add New
+            </span>
+          </Link>
+        </Button>
       </div>
       <div className="rounded-md border">
         <Table>

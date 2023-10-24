@@ -11,7 +11,7 @@ const MainNav = ({}) => {
   return (
     <nav className="mx-6 flex items-center space-x-4 lg:space-x-6">
       <Link
-        href="http://localhost:3000/order"
+        href="/order"
         className={cn(
           "text-sm font-medium transition-colors hover:text-black",
           true ? "text-black" : "text-neutral-500",
@@ -21,23 +21,13 @@ const MainNav = ({}) => {
       </Link>
 
       <Link
-        href=" http://localhost:3000/items"
+        href="/itemstable"
         className={cn(
           "text-sm font-medium transition-colors hover:text-black",
           true ? "text-black" : "text-neutral-500",
         )}
       >
         ITEMS
-      </Link>
-
-      <Link
-        href="/"
-        className={cn(
-          "text-sm font-medium transition-colors hover:text-black",
-          true ? "text-black" : "text-neutral-500",
-        )}
-      >
-        Welcome to BAH PPE Store
       </Link>
     </nav>
   );

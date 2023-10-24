@@ -33,7 +33,7 @@ const ImageUplaod: React.FC<ImageUploadProps> = ({
   }
   return (
     <div>
-      <div className="mb-4 flex items-center gap-4">
+      <div className="flex items-center gap-4">
         {value.map((url) => (
           <div
             key={url}
@@ -64,6 +64,7 @@ const ImageUplaod: React.FC<ImageUploadProps> = ({
               disabled={disabled}
               variant="secondary"
               onClick={onClick}
+              className="w-full"
             >
               <ImagePlus className="mr-2 h-4 w-4" />
               Upload an Image
