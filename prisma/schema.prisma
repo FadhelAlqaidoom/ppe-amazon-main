@@ -34,24 +34,12 @@ model Product {
   siteName     Sites
   site         Site        @relation(fields: [siteName], references: [name])
   orderItems   OrderItem[]
-  images       Image[]
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
   @@index([categoryName])
   @@index([name])
   @@index([siteName])
-}
-
-model Image {
-  id        String   @id @default(uuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url       String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([productId])
 }
 
 enum Categories {
