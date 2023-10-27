@@ -49,7 +49,8 @@ export const ItemCard: React.FC<CardProps> = ({ data }) => {
             src={data.imageUrl}
             alt={data.category}
             layout="fill"
-            objectFit="cover"
+            objectFit="contain"
+            quality={100}
           />
         </div>
       </CardHeader>
