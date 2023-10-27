@@ -48,7 +48,7 @@ const formSchema = z.object({
   description: z.string().min(0).max(32),
   quantity: z.number(),
   unitCost: z.number(),
-  size: z.string().min(1).max(1),
+  size: z.string().min(1).max(2),
   imageUrl: z.string(),
 });
 

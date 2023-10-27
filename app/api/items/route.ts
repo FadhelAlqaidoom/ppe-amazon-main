@@ -20,7 +20,7 @@ export const createItemSchema = z.object({
   site: z.enum(["BAH52", "BAH53", "BAH54"]),
   quantity: z.number(),
   unitCost: z.number(),
-  size: z.string().min(1).max(1),
+  size: z.string().min(1).max(2),
   imageUrl: z.string(),
 });
 
