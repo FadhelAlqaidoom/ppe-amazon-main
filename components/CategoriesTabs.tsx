@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ItemCard } from "@/components/ItemCard";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { item } from "@/types";
+import { ItemsTable, item } from "@/types";
 
 interface Category {
   value: string;
@@ -14,7 +14,7 @@ interface Category {
 
 interface TabsProps {
   categories: Category[];
-  items: item[];
+  items: ItemsTable[];
 }
 
 export const CategoriesTabs: React.FC<TabsProps> = ({ categories, items }) => {

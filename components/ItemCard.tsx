@@ -1,6 +1,6 @@
 "use client";
 
-import React, { MouseEventHandler, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -20,10 +20,10 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 import useCart from "@/hooks/use-cart";
-import { item } from "@/types";
+import { ItemsTable } from "@/types";
 
 interface CardProps {
-  data: item;
+  data: ItemsTable;
 }
 
 export const ItemCard: React.FC<CardProps> = ({ data }) => {
@@ -33,15 +33,19 @@ export const ItemCard: React.FC<CardProps> = ({ data }) => {
 
   const onAddToCart: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
-    cart.addItem(data);
+    cart.addItem(data, selectedSize);
   };
+
+  // Find the selected variant based on the selected size
+  const selectedVariant = data.variants.find(
+    (variant) => variant.size === selectedSize,
+  );
 
   return (
     <Card>
       <CardHeader>
         <div className="relative h-48 w-full">
           <Image
-            // src={item.photoUrl}
             src={data.imageUrl}
             alt={data.category}
             layout="fill"
@@ -51,7 +55,7 @@ export const ItemCard: React.FC<CardProps> = ({ data }) => {
       </CardHeader>
       <CardContent>
         <CardTitle className="mb-2 text-xl font-bold">{data.name}</CardTitle>
-        <Select>
+        <Select onValueChange={(value) => setSelectedSize(value)}>
           <SelectTrigger className="w-full">
             {selectedSize ? (
               <span>{selectedSize}</span>
@@ -60,21 +64,19 @@ export const ItemCard: React.FC<CardProps> = ({ data }) => {
             )}
           </SelectTrigger>
           <SelectContent>
-            {data.sizeOptions.map((size, index) => (
+            {data.variants.map((variant) => (
               <SelectItem
-                key={index}
-                value={size}
-                onClick={() => setSelectedSize(size)}
+                key={variant.id} // Use a unique identifier instead of the array index
+                value={variant.size}
               >
-                {size}
+                {variant.size}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <CardDescription className="my-2">
-          Quantity Available: {data.quantityAvailable}
+          Quantity Available: {selectedVariant ? selectedVariant.quantity : 0}
         </CardDescription>
-
         <div className="my-2">
           <label
             htmlFor="orderQuantity"
@@ -88,7 +90,7 @@ export const ItemCard: React.FC<CardProps> = ({ data }) => {
             value={orderQuantity}
             onChange={(e) => setOrderQuantity(Number(e.target.value))}
             min={1}
-            max={data.quantityAvailable}
+            max={selectedVariant ? selectedVariant.quantity : 0}
           />
         </div>
       </CardContent>

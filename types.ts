@@ -7,6 +7,24 @@ export interface item {
   imageUrl: string;
 }
 
+export interface Variant {
+  id: string;
+  size: string;
+  quantity: number;
+}
+
+export interface ItemsTable {
+  id: string;
+  name: string;
+  description: string;
+  unitCost: number;
+  variants: Variant[];
+  category: string;
+  site: string;
+  imageUrl: string;
+  selectedSize?: string;
+}
+
 export interface Image {
   id: string;
   url: string;

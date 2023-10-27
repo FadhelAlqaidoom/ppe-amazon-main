@@ -10,62 +10,13 @@ const fetchCategories = async () => {
 };
 
 const fetchItems = async () => {
-  let items = await prisma.product.findMany();
+  let items = await prisma.product.findMany({
+    include: {
+      variants: true, // Include related ProductVariant records
+    },
+  });
   return items;
 };
-
-// const categories = [
-//   { value: "HAND_PROTECTION", label: "Hand protection" },
-//   { value: "eye_protection", label: "Eye protection" },
-//   { value: "head_protection", label: "Head protection" },
-//   { value: "safety_arc_suit", label: "Safety Arc Suit" },
-//   { value: "others", label: "Others" },
-// ];
-
-// const items = [
-//   {
-//     photoUrl: "/glovesimg.jpeg",
-//     name: "Item 1",
-//     sizeOptions: ["Small", "Medium", "Large"],
-//     quantityAvailable: 10,
-//     category: "HEAD_PROTECTION",
-//   },
-//   {
-//     photoUrl: "/glovesimg.jpeg",
-//     name: "Item 1",
-//     sizeOptions: ["Small", "Medium", "Large"],
-//     quantityAvailable: 10,
-//     category: "HAND_PROTECTION",
-//   },
-//   {
-//     photoUrl: "/glovesimg.jpeg",
-//     name: "Item 1",
-//     sizeOptions: ["Small", "Medium", "Large"],
-//     quantityAvailable: 10,
-//     category: "FACE_PROTECTION",
-//   },
-//   {
-//     photoUrl: "/glovesimg.jpeg",
-//     name: "Item 1",
-//     sizeOptions: ["Small", "Medium", "Large"],
-//     quantityAvailable: 10,
-//     category: "HAND_PROTECTION",
-//   },
-//   {
-//     photoUrl: "/glovesimg.jpeg",
-//     name: "Item 1",
-//     sizeOptions: ["Small", "Medium", "Large"],
-//     quantityAvailable: 10,
-//     category: "HAND_PROTECTION",
-//   },
-//   {
-//     photoUrl: "/glovesimg.jpeg",
-//     name: "Item 1",
-//     sizeOptions: ["Small", "Medium", "Large"],
-//     quantityAvailable: 10,
-//     category: "HAND_PROTECTION",
-//   },
-// ];
 
 const Order = async () => {
   const fetchedCategories = await fetchCategories();
@@ -76,14 +27,26 @@ const Order = async () => {
     value: category.name,
     label: category.name.replaceAll("_", " "),
   }));
-  const items = fetchedItems.map((item) => ({
-    id: item.id,
-    name: item.name,
-    sizeOptions: [item.size],
-    quantityAvailable: item.quantity,
-    category: item.categoryName,
-    imageUrl: item.imageUrl,
-  }));
+  const items = fetchedItems.map((item) => {
+    const sizeOptions = item.variants.map((variant) => variant.size);
+    const totalQuantity = item.variants.reduce(
+      (sum, variant) => sum + variant.quantity,
+      0,
+    );
+
+    return {
+      id: item.id,
+      name: item.name,
+      description: item.description, // Include description property
+      unitCost: item.unitCost, // Include unitCost property
+      sizeOptions, // size options from variants
+      quantityAvailable: totalQuantity, // total quantity across all variants
+      category: item.categoryName,
+      site: item.siteName, // Assume siteName is the correct property on item
+      imageUrl: item.imageUrl,
+      variants: item.variants, // Include variants property
+    };
+  });
 
   return (
     <div className="flex min-h-screen flex-col items-start px-4 pt-20">

@@ -3,11 +3,11 @@ import { toast } from "react-hot-toast";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 import { AlertTriangle } from "lucide-react";
-import { item } from "@/types";
+import { ItemsTable } from "@/types";
 
 interface CartStore {
-  items: item[];
-  addItem: (data: item) => void;
+  items: ItemsTable[];
+  addItem: (data: ItemsTable, size: string) => void;
   removeItem: (id: string) => void;
   removeAll: () => void;
 }
@@ -16,14 +16,17 @@ const useCart = create(
   persist<CartStore>(
     (set, get) => ({
       items: [],
-      addItem: (data: item) => {
+      addItem: (data: ItemsTable, size: string) => {
         const currentItems = get().items;
-        const existingItem = currentItems.find((item) => item.id === data.id);
+        const existingItem = currentItems.find(
+          (item) => item.id === data.id && item.selectedSize === size,
+        );
 
         if (existingItem) {
-          return toast("Item already in cart.");
+          return toast("Item with the same size already in cart.");
         }
 
+        data.selectedSize = size; // set the selected size
         set({ items: [...get().items, data] });
         toast.success("Item added to cart.");
       },

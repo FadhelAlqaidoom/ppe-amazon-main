@@ -23,24 +23,35 @@ model Employee {
 }
 
 model Product {
-  id           String      @id @default(uuid())
+  id           String           @id @default(uuid())
   name         String
   description  String
   categoryName Categories
-  category     Category    @relation(fields: [categoryName], references: [name])
-  quantity     Int
+  category     Category         @relation(fields: [categoryName], references: [name])
+  variants     ProductVariant[]
   unitCost     Float
-  size         String
   siteName     Sites
-  site         Site        @relation(fields: [siteName], references: [name])
+  site         Site             @relation(fields: [siteName], references: [name])
   orderItems   OrderItem[]
   imageUrl     String
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 
   @@index([categoryName])
   @@index([name])
   @@index([siteName])
+}
+
+model ProductVariant {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size      String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
 }
 
 enum Categories {

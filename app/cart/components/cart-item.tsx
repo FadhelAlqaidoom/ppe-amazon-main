@@ -4,10 +4,10 @@ import { X } from "lucide-react";
 
 import IconButton from "@/components/ui/icon-button";
 import useCart from "@/hooks/use-cart";
-import { item } from "@/types";
+import { ItemsTable } from "@/types";
 
 interface CartItemProps {
-  data: item;
+  data: ItemsTable;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ data }) => {
@@ -16,7 +16,6 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
   const onRemove = () => {
     cart.removeItem(data.id);
   };
-
   return (
     <li className="flex border-b py-6">
       <div className="relative h-24 w-24 overflow-hidden rounded-md sm:h-48 sm:w-48">
@@ -40,7 +39,7 @@ const CartItem: React.FC<CartItemProps> = ({ data }) => {
 
           <div className="mt-1 flex text-sm">
             <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">
-              Size: {data.sizeOptions}
+              Size: {data.selectedSize}
             </p>
           </div>
         </div>

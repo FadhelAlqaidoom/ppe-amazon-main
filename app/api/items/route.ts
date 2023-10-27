@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import prismadb from "@/lib/prismadb";
 
-// Update the schema to use the correct keys: 'categoryName' and 'siteName'
+// Update the schema to include a variants array
 export const createItemSchema = z.object({
   name: z.string().min(1).max(32),
   description: z.string().min(0),
@@ -18,10 +18,14 @@ export const createItemSchema = z.object({
     "SAFETY_ARC_SUIT",
   ]),
   site: z.enum(["BAH52", "BAH53", "BAH54"]),
-  quantity: z.number(),
   unitCost: z.number(),
-  size: z.string().min(1).max(2),
   imageUrl: z.string(),
+  variants: z.array(
+    z.object({
+      size: z.string().min(1).max(2),
+      quantity: z.number(),
+    }),
+  ),
 });
 
 export async function POST(request: NextRequest) {
@@ -43,6 +47,9 @@ export async function POST(request: NextRequest) {
         site: {
           connect: { name: validation.data.site },
         },
+        variants: {
+          create: validation.data.variants,
+        },
       },
     });
 
@@ -55,5 +62,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-// to update table

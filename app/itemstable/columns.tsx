@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { ItemsTable, Variant } from "@/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,16 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export type itemstable = {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  site: string;
-  quantity: number;
-  unitCost: number;
-  size: string;
-};
 type DeleteButtonProps = {
   itemId: string;
 };
@@ -39,7 +30,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ itemId }) => {
   return <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>;
 };
 
-export const columns: ColumnDef<itemstable>[] = [
+export const columns: ColumnDef<ItemsTable>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -56,10 +47,12 @@ export const columns: ColumnDef<itemstable>[] = [
     cell: ({ row }) => {
       return <div className="font-medium">{row.getValue("name")}</div>;
     },
+    accessorFn: (row) => row.name,
   },
   {
     accessorKey: "description",
     header: "Item Description",
+    accessorFn: (row) => row.description,
   },
   {
     accessorKey: "category",
@@ -74,6 +67,7 @@ export const columns: ColumnDef<itemstable>[] = [
         </Button>
       );
     },
+    accessorFn: (row) => row.category,
   },
   {
     accessorKey: "site",
@@ -88,18 +82,19 @@ export const columns: ColumnDef<itemstable>[] = [
         </Button>
       );
     },
+    accessorFn: (row) => row.site,
   },
   {
-    accessorKey: "quantity",
-    header: ({ column }) => {
+    accessorKey: "variants",
+    header: "Sizes and Quantities",
+    cell: ({ row }) => {
+      const variants = row.getValue("variants") as Variant[]; // Type assertion here
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Available Quantity
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div>
+          {variants.map((variant, index) => (
+            <div key={index}>{`${variant.size}: ${variant.quantity}`}</div>
+          ))}
+        </div>
       );
     },
   },

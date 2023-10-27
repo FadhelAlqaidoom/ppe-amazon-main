@@ -1,31 +1,53 @@
 import { Button } from "@/components/ui/button";
-import { itemstable, columns } from "./columns";
+import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 const fetchItems = async () => {
-  let items = await prisma.product.findMany();
+  let items = await prisma.product.findMany({
+    include: {
+      variants: true,
+    },
+  });
   return items;
 };
 
-async function getData(): Promise<itemstable[]> {
+interface Variant {
+  size: string;
+  quantity: number;
+}
+
+interface ItemsTable {
+  id: string;
+  name: string;
+  description: string;
+  unitCost: number;
+  variants: Variant[];
+  category: string;
+  site: string;
+}
+
+async function getData(): Promise<ItemsTable[]> {
   const fetchedItems = await fetchItems();
   const items = fetchedItems.map((item) => ({
     id: item.id,
+    imageUrl: item.imageUrl,
     name: item.name,
     description: item.description,
     unitCost: item.unitCost,
-    quantity: item.quantity,
+    variants: item.variants.map((variant: any) => ({
+      size: variant.size,
+      quantity: variant.quantity,
+    })),
     category: item.categoryName,
-    size: item.size,
     site: item.siteName,
   }));
   return items;
 }
 
-export default async function DemoPage() {
+export default async function ItemsPage() {
   const data = await getData();
 
   return (
