@@ -21,6 +21,7 @@ import {
 import Image from "next/image";
 import useCart from "@/hooks/use-cart";
 import { ItemsTable } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface CardProps {
   data: ItemsTable;
@@ -75,7 +76,9 @@ export const ItemCard: React.FC<CardProps> = ({ data }) => {
             ))}
           </SelectContent>
         </Select>
-        <CardDescription className="my-2">
+        <CardDescription
+          className={cn("my-2", { "opacity-0": !selectedVariant })}
+        >
           Quantity Available: {selectedVariant ? selectedVariant.quantity : 0}
         </CardDescription>
         <div className="my-2">
